@@ -103,7 +103,7 @@ def main_worker(gpu, ngpus_per_node, args):
     # create model
     print("=> creating model '{}'".format(args.arch))
     num_classes = 100 if args.dataset == 'cifar100' else 10
-    use_norm = True if args.loss_type == 'LDAM' else False
+    use_norm = True if args.loss_type == 'LDAM' or args.loss_type == 'Hybrid' else False
     model = models.__dict__[args.arch](num_classes=num_classes, use_norm=use_norm)
 
     if args.gpu is not None:
@@ -214,7 +214,7 @@ def main_worker(gpu, ngpus_per_node, args):
         elif args.loss_type == 'Focal':
             criterion = FocalLoss(weight=per_cls_weights, gamma=2).cuda(args.gpu)
         elif args.loss_type == 'Hybrid':
-            criterion = HybridLoss(weight=per_cls_weights, gamma=2).cuda(args.gpu)
+            criterion = HybridLoss(cls_num_list=cls_num_list, max_m=0.5, s=30, weight=per_cls_weights, gamma=2).cuda(args.gpu)
         else:
             warnings.warn('Loss type is not listed')
             return
