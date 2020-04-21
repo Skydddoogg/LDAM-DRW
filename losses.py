@@ -45,7 +45,7 @@ class HybridLoss(nn.Module):
 
 class LDAMLoss(nn.Module):
     
-    def __init__(self, cls_num_list, max_m=0.5, weight=None, s=30):
+    def __init__(self, cls_num_list, max_m=0.5, weight=None, s=30, gamma=0.):
         super(LDAMLoss, self).__init__()
         m_list = 1.0 / np.sqrt(np.sqrt(cls_num_list))
         m_list = m_list * (max_m / np.max(m_list))
@@ -54,6 +54,7 @@ class LDAMLoss(nn.Module):
         assert s > 0
         self.s = s
         self.weight = weight
+        self.gamma = gamma
 
     def forward(self, x, target):
         index = torch.zeros_like(x, dtype=torch.uint8)
@@ -65,4 +66,4 @@ class LDAMLoss(nn.Module):
         x_m = x - batch_m
     
         output = torch.where(index, x_m, x)
-        return F.cross_entropy(self.s*output, target, weight=self.weight)
+        return focal_loss(F.cross_entropy(self.s*output, target, weight=self.weight), self.gamma)
