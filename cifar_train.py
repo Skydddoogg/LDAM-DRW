@@ -212,9 +212,9 @@ def main_worker(gpu, ngpus_per_node, args):
         elif args.loss_type == 'LDAM':
             criterion = LDAMLoss(cls_num_list=cls_num_list, max_m=0.5, s=30, weight=per_cls_weights).cuda(args.gpu)
         elif args.loss_type == 'Focal':
-            criterion = FocalLoss(weight=per_cls_weights, gamma=1).cuda(args.gpu)
+            criterion = FocalLoss(weight=per_cls_weights, gamma=2).cuda(args.gpu)
         elif args.loss_type == 'Hybrid':
-            criterion = HybridLoss(weight=per_cls_weights, gamma=1).cuda(args.gpu)
+            criterion = HybridLoss(weight=per_cls_weights, gamma=2).cuda(args.gpu)
         else:
             warnings.warn('Loss type is not listed')
             return
