@@ -156,3 +156,6 @@ TAGS
 # Files generated when a patch is rejected
 *.orig
 *.rej
+
+# Unused files
+debugger.py
