@@ -19,7 +19,7 @@ from tensorboardX import SummaryWriter
 from sklearn.metrics import confusion_matrix
 from utils import *
 from imbalance_cifar import IMBALANCECIFAR10, IMBALANCECIFAR100
-from losses import LDAMLoss, FocalLoss
+from losses import LDAMLoss, FocalLoss, HybridLoss
 
 model_names = sorted(name for name in models.__dict__
     if name.islower() and not name.startswith("__")
@@ -213,6 +213,8 @@ def main_worker(gpu, ngpus_per_node, args):
             criterion = LDAMLoss(cls_num_list=cls_num_list, max_m=0.5, s=30, weight=per_cls_weights).cuda(args.gpu)
         elif args.loss_type == 'Focal':
             criterion = FocalLoss(weight=per_cls_weights, gamma=1).cuda(args.gpu)
+        elif args.loss_type == 'Hybrid':
+            criterion = HybridLoss(weight=per_cls_weights, gamma=1).cuda(args.gpu)
         else:
             warnings.warn('Loss type is not listed')
             return
