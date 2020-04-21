@@ -36,7 +36,7 @@ def hybrid_loss(target, input_values, gamma):
 class HybridLoss(nn.Module):
 
     def __init__(self, cls_num_list, max_m=0.5, weight=None, s=30, gamma=0.):
-        super(LDAMLoss, self).__init__()
+        super(HybridLoss, self).__init__()
         m_list = 1.0 / np.sqrt(np.sqrt(cls_num_list))
         m_list = m_list * (max_m / np.max(m_list))
         m_list = torch.cuda.FloatTensor(m_list)
