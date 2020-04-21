@@ -22,14 +22,13 @@ class FocalLoss(nn.Module):
 
 def hybrid_loss(target, input_values, gamma):
     """Computes the focal loss"""
-
     p = torch.exp(-input_values)
     loss = (1 - p) ** gamma * input_values
     final_loss = 0
 
     for _class in torch.unique(target):
-        index = torch.where(condition = target == _class)
-        final_loss += torch.take(loss, index[0]).mean()
+        mask = torch.eq(target, _class)
+        final_loss += torch.masked_select(loss, mask).mean()
 
     return final_loss
 
