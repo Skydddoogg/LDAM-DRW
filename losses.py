@@ -80,4 +80,4 @@ class LDAMLoss(nn.Module):
         x_m = x - batch_m
     
         output = torch.where(index, x_m, x)
-        return focal_loss(F.cross_entropy(self.s*output, target, weight=self.weight), self.gamma)
+        return F.cross_entropy(self.s*output, target, weight=self.weight)
