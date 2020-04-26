@@ -24,13 +24,13 @@ def hybrid_loss(target, input_values, gamma):
     """Computes the focal loss"""
     p = torch.exp(-input_values)
     loss = (1 - p) ** gamma * input_values
-    final_loss = 0
+    totol_loss = 0
 
     for _class in torch.unique(target):
         mask = torch.eq(target, _class)
-        final_loss += torch.masked_select(loss, mask).mean()
+        totol_loss += torch.masked_select(loss, mask).mean()
 
-    return final_loss
+    return totol_loss
 
 class HybridLoss(nn.Module):
 
@@ -59,7 +59,7 @@ class HybridLoss(nn.Module):
 
 class LDAMLoss(nn.Module):
     
-    def __init__(self, cls_num_list, max_m=0.5, weight=None, s=30, gamma=0.):
+    def __init__(self, cls_num_list, max_m=0.5, weight=None, s=30):
         super(LDAMLoss, self).__init__()
         m_list = 1.0 / np.sqrt(np.sqrt(cls_num_list))
         m_list = m_list * (max_m / np.max(m_list))
@@ -68,7 +68,6 @@ class LDAMLoss(nn.Module):
         assert s > 0
         self.s = s
         self.weight = weight
-        self.gamma = gamma
 
     def forward(self, x, target):
         index = torch.zeros_like(x, dtype=torch.uint8)
