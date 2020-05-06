@@ -32,6 +32,16 @@ def hybrid_loss(target, input_values, gamma):
 
     return totol_loss
 
+class FL_MFE(nn.Module):
+    def __init__(self, weight=None, gamma=0.):
+        super(FL_MFE, self).__init__()
+        assert gamma >= 0
+        self.gamma = gamma
+        self.weight = weight
+
+    def forward(self, input, target):
+        return hybrid_loss(target, F.cross_entropy(input, target, reduction='none', weight=self.weight), self.gamma)
+
 class HybridLoss(nn.Module):
 
     def __init__(self, cls_num_list, max_m=0.5, weight=None, s=30, gamma=0.):
